@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { Post } from '../components/Post'
 import { fetchPostsByTag } from '../redux/slices/posts'
+import { formatCreatedAt } from '../helper'
 
 export const TagPage = () => {
   const { tagName } = useParams()
@@ -23,7 +24,7 @@ export const TagPage = () => {
         #{tagName}
       </Typography>
       <Grid container spacing={4}>
-        <Grid size={8}>
+        <Grid size={{ xs: 12, sm: 8 }}>
           {isPostsLoading
             ? [...Array(5)].map((_, index) => (
                 <Post key={index} isLoading={true} />
@@ -39,7 +40,7 @@ export const TagPage = () => {
                       : ''
                   }
                   user={post.user}
-                  createdAt={post.createdAt}
+                  createdAt={formatCreatedAt(post.createdAt)}
                   viewsCount={post.viewsCount}
                   commentsCount={3}
                   tags={post.tags}

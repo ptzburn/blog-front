@@ -38,7 +38,7 @@ export const Home = () => {
         <Tab label="Popular" />
       </Tabs>
       <Grid container spacing={4}>
-        <Grid size={8}>
+        <Grid size={{ xs: 12, sm: 8 }}>
           {isPostsLoading
             ? [...Array(5)].map((_, index) => (
                 <Post key={index} isLoading={true} />
@@ -62,9 +62,13 @@ export const Home = () => {
                 />
               ))}
         </Grid>
-        <Grid size={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           {' '}
-          <TagsBlock items={tags.items} isLoading={isTagsLoading} />
+          <TagsBlock
+            items={tags.items}
+            isLoading={isTagsLoading}
+            sx={{ display: { xs: 'none', sm: 'block' } }}
+          />
         </Grid>
       </Grid>
     </>
