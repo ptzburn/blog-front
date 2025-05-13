@@ -133,7 +133,7 @@ export const AddPost = () => {
           </Button>
           <img
             className={styles.image}
-            src={`${process.env.REACT_APP_API_URL}${imageUrl}`}
+            src={`https://awesome-blog-c4b86ea6a2fe.herokuapp.com${imageUrl}`}
             alt="Uploaded"
           />
         </>

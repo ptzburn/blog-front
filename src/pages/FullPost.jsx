@@ -39,7 +39,7 @@ export const FullPost = () => {
         title={post.title}
         imageUrl={
           post.imageUrl
-            ? `${process.env.REACT_APP_API_URL}${post.imageUrl}`
+            ? `https://awesome-blog-c4b86ea6a2fe.herokuapp.com${post.imageUrl}`
             : ''
         }
         user={post.user}
