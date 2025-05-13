@@ -1,70 +1,54 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from '../axios'
 import ReactMarkdown from 'react-markdown'
 
 import { Post } from '../components/Post'
 import { Index } from '../components/AddComment'
 import { CommentsBlock } from '../components/CommentsBlock'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchComments } from '../redux/slices/comments'
+import { fetchPostById, updateCommentsCount } from '../redux/slices/posts'
+import { formatCreatedAt } from '../helper'
 
 export const FullPost = () => {
-  const [data, setData] = useState()
-  const [isLoading, setIsLoading] = useState(true)
+  const isLoading = useSelector(state => state.posts.post.status === 'loading')
   const { id } = useParams()
+  const dispatch = useDispatch()
+  const post = useSelector(state => state.posts.post.item)
+  const comments = useSelector(state => state.comments.comments)
+  const isCommentsLoading = comments.status === 'loading'
 
   useEffect(() => {
-    axios
-      .get(`/posts/${id}`)
-      .then(res => {
-        setData(res.data)
-        setIsLoading(false)
-      })
-      .catch(error => {
-        console.warn(error)
-        alert('Unable to fetch the post.')
-      })
+    dispatch(fetchPostById(id))
+    dispatch(fetchComments(id))
   }, [])
 
   if (isLoading) {
     return <Post isLoading={isLoading} isFullPost={true} />
   }
 
+  const incrementCommentsCount = () => {
+    dispatch(updateCommentsCount(post.commentsCount + 1))
+  }
+
   return (
     <>
       <Post
-        id={data._id}
-        title={data.title}
-        imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ''}
-        user={data.user}
-        createdAt={data.createdAt}
-        viewsCount={data.viewsCount}
-        commentsCount={3}
-        tags={data.tags}
+        id={post._id}
+        title={post.title}
+        imageUrl={post.imageUrl ? `http://localhost:4444${post.imageUrl}` : ''}
+        user={post.user}
+        createdAt={formatCreatedAt(post.createdAt)}
+        viewsCount={post.viewsCount}
+        commentsCount={post.commentsCount}
+        tags={post.tags}
         isFullPost={true}
       >
-        <ReactMarkdown children={data.text} />
+        <ReactMarkdown children={post.text} />
       </Post>
-      <CommentsBlock
-        items={[
-          {
-            user: {
-              fullName: 'John Doe',
-              avatarUrl: 'https://mui.com/static/images/avatar/1.jpg'
-            },
-            text: 'This is a test comment 555555'
-          },
-          {
-            user: {
-              fullName: 'Henry Morgan',
-              avatarUrl: 'https://mui.com/static/images/avatar/2.jpg'
-            },
-            text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top'
-          }
-        ]}
-        isLoading={false}
-      >
-        <Index />
+      <CommentsBlock items={comments.items} isLoading={isCommentsLoading}>
+        <Index postId={id} incrementCommentsCount={incrementCommentsCount} />
       </CommentsBlock>
     </>
   )
