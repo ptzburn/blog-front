@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+  baseURL: 'https://awesome-blog-c4b86ea6a2fe.herokuapp.com'
 })
 
 instance.interceptors.request.use(config => {
